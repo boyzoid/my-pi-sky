@@ -1,0 +1,19 @@
+{
+  "name": "gps_demo",
+  "version": "0.0.1",
+  "description": "GPS Data Capture USing Node.js",
+  "main": "index.js",
+  "scripts": {
+    "parser": "node parser/index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Scott Stroz",
+  "license": "MIT",
+  "dependencies": {
+    "@mysql/xdevapi": "^8.0.33",
+    "dotenv": "^16.3.1",
+    "gps": "^0.6.1",
+    "serialport": "^12.0.0"
+  },
+  "type": "module"
+}
