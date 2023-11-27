@@ -4,7 +4,7 @@ import GPS from "gps"
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import DocumentStore from "../app/DocumentStoreDocumentStore.js";
+import DocumentStore from "../app/DocumentStore.js";
 const docStore = new DocumentStore(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
