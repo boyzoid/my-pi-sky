@@ -23,11 +23,12 @@ startDate.setMinutes(startDate.getMinutes() - 1)
 console.log(startDate)
 
 gps.on('data', async (parsed)=>{
-    let diff = Math.abs(startDate - gps.state.time)
+    let diff = Math.abs(startDate - parsed.time)
     let sec = Math.floor((diff/1000))
     if(sec > 30){
+        startDate = parsed.time
         try{
-            await docStore.addLocation(gps.state)
+            await docStore.addLocation(parsed)
         }
         catch(e){
             console.log('DB Error')
