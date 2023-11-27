@@ -20,6 +20,14 @@ class DocumentStore {
         })
     }
 
+    async addLocation(location){
+        const session = await this.#pool.getSession()
+        const schema = session.getSchema(this.#schemaName)
+        const collection = schema.getCollection(this.#collectionName)
+        await collection.add(location).execute()
+        await session.close()
+    }
+
     async getMonths(){
         const session = await this.#pool.getSession()
         const schema = session.getSchema(this.#schemaName)
