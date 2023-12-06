@@ -52,17 +52,17 @@ class DocumentStore {
 
     async getDates(year, month){
         const session = await this.#pool.getSession()
-        const schema = session.getSchema(this.#schemaName)
-        const collection = schema.getCollection(this.#collectionName)
-        const result = await collection.find("year(time) = :year and month(time) = :month")
-            .bind("year", year)
-            .bind("month", month)
-            .fields(["json_arrayagg(date_format(time, '%d')) as days"])
-            .groupBy("date_format(time, '%d')")
-            .execute()
-        const data = result.fetchAll()
+        const sql = `select json_object('days',json_arrayagg(date))
+                        from(select
+                            distinct day(doc->>'$.time') date
+                        from location
+                        where year(doc->>'$.time') = 2023
+                          and month(doc->>'$.time') = 10) as dates`
+        const query = session.sql(sql)
+        const results = await query.execute()
+        const data = results.fetchAll()
         await session.close()
-        return data
+        return data[0][0].days
     }
 }
 export default DocumentStore

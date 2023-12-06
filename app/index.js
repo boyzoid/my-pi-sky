@@ -33,7 +33,7 @@ app.get('/months', async (req, res) => {
 })
 
 app.get('/dates/:year/:month', async (req, res) => {
-    const dates = await docStore.getDates(req.params.year, req.params.month)
-    let msg = {dates: dates}
+    const days = await docStore.getDates(req.params.year, req.params.month)
+    let msg = {days: days}
     res.send(msg)
 })
