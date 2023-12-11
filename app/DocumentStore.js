@@ -9,7 +9,7 @@ class DocumentStore {
         this.#schemaName = schemaName
         this.#collectionName = collectionName
         this.#connectionUrl =
-            `mysqlx://${dbUser}:${dbPassword}@${dbHost}:${dbPort}}/${schemaName}`
+            `mysqlx://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${schemaName}`
         this.#pool = mysqlx.getClient(this.#connectionUrl, {
             pooling: {
                 enabled: true,

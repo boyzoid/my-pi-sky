@@ -14,6 +14,8 @@ const docStore = new DocumentStore(
     process.env.DB_COLLECTION
 );
 
+console.log(process.env.DB_PORT)
+
 const port = new SerialPort({path: '/dev/ttyUSB0', baudRate: 9600})
 const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 const gps = new GPS
