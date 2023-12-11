@@ -23,9 +23,11 @@ startDate.setMinutes(startDate.getMinutes() - 1)
 console.log(startDate)
 
 gps.on('data', async ()=>{
-    let diff = Math.abs(startDate - gps.state.time)
-    let sec = Math.floor((diff/1000))
-    if(sec > 30){
+    const diff = Math.abs(startDate - gps.state.time)
+    const sec = Math.floor((diff/1000))
+    const now = new Date()
+    if(sec > 30 && now.getFullYear() === gps.state.time.getFullYear()){
+        startDate = gps.state.time
         try{
             await docStore.addLocation(gps.state)
         }
