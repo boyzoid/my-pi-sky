@@ -5,7 +5,12 @@ import * as dotenv from 'dotenv'
 import { setTimeout } from 'timers/promises'
 dotenv.config()
 
+
+
 import DocumentStore from "../app/DocumentStore.js";
+
+await setTimeout(5000)
+
 const docStore = new DocumentStore(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
@@ -22,8 +27,6 @@ let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
 
 console.log('App started')
-
-await setTimeout(5000)
 
 gps.on('data', async ()=>{
     const diff = Math.abs(startDate - gps.state.time)
