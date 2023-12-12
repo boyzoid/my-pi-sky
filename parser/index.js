@@ -9,8 +9,6 @@ dotenv.config()
 
 import DocumentStore from "../app/DocumentStore.js";
 
-await setTimeout(5000)
-
 const docStore = new DocumentStore(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
