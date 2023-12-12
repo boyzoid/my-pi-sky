@@ -37,6 +37,7 @@ gps.on('data', async ()=>{
         }
         catch(e){
             console.log('DB Error')
+            console.log(e)
         }
     }
 })
