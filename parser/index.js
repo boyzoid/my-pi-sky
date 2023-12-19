@@ -30,7 +30,9 @@ console.log('App started')
 gps.on('data', async ()=>{
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff/1000))
-    if(sec > 30 && gps.state.lat && gps.state.lon && gps.state.speed > .5){
+    const dist = gps.Distance(lastPoint.lat, lastPoint.lon, gps.state.lat, gps.state.lon)
+    console.log(dist)
+    if(sec > 15 && gps.state.lat && gps.state.lon){
         startDate = gps.state.time
         const loc = {
             lat: gps.state.lat,
@@ -40,7 +42,7 @@ gps.on('data', async ()=>{
             time: gps.state.time
         }
         try{
-            await docStore.addLocation(loc)
+            //await docStore.addLocation(loc)
         }
         catch(e){
             console.log('DB Error')
