@@ -23,14 +23,14 @@ const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 const gps = new GPS
 let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
+let lastPoint = {lat: 0, lon: 0};
 
 console.log('App started')
 
 gps.on('data', async ()=>{
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff/1000))
-    const now = new Date()
-    if(sec > 30 && now.getFullYear() === gps.state.time.getFullYear()){
+    if(sec > 30 && gps.state.lat && gps.state.lon && gps.state.speed > .5){
         startDate = gps.state.time
         try{
             await docStore.addLocation(gps.state)
