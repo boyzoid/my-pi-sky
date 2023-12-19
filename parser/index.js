@@ -30,7 +30,7 @@ console.log('App started')
 gps.on('data', async ()=>{
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff/1000))
-    const dist = gps.Distance(lastPoint.lat, lastPoint.lon, gps.state.lat, gps.state.lon)
+    const dist = GPS.Distance(lastPoint.lat, lastPoint.lon, gps.state.lat, gps.state.lon)
     console.log(dist)
     if(sec > 15 && gps.state.lat && gps.state.lon){
         startDate = gps.state.time
