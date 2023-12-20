@@ -2,7 +2,6 @@ import { SerialPort } from "serialport"
 import { ReadlineParser } from '@serialport/parser-readline'
 import GPS from "gps"
 import * as dotenv from 'dotenv'
-import { setTimeout } from 'timers/promises'
 dotenv.config()
 
 
@@ -31,13 +30,14 @@ gps.on('data', async ()=>{
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff))
     const dist = GPS.Distance(lastPoint.lat, lastPoint.lon, gps.state.lat, gps.state.lon)
-    if(sec > 15000 && gps.state.lat && gps.state.lon && dist > 0.002){
+    if((gps.state.lat && gps.state.lon) && sec > 15000 && dist > 0.009144){
+        //About 2 feet per second (1.6 MPH)
         startDate = gps.state.time
         lastPoint = {lat: gps.state.lat, lon: gps.state.lon}
         const loc = {
             lat: gps.state.lat,
             lon: gps.state.lon,
-            speed: gps.state.speed,
+            speed: gps.state.speed || 0,
             altitude: gps.state.alt,
             time: gps.state.time
         }
