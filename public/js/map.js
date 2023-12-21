@@ -1,4 +1,3 @@
-let markers = []
 let map = L.map('map')
 const init = () => {
     navigator.geolocation.getCurrentPosition(locationSuccessCallback, locationErrorCallback, {enableHighAccuracy:true});
@@ -65,4 +64,5 @@ const locationSuccessCallback = (position) => {
 const locationErrorCallback = (error) => {
     console.log(error);
 };
+
 window.onload = init

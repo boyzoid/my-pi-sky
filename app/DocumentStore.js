@@ -34,12 +34,12 @@ class DocumentStore {
         const collection = schema.getCollection(this.#collectionName)
         const result = await collection.find('time <= now()').
             fields([
-                "date_format(time, '%m-%e-%Y') as `full`",
+                "date_format(time, '%a. %b. %e, %Y') as `full`",
                 "year(time) as `year`",
                 "month(time) as `month`",
                 "day(time) as `day`"])
             .groupBy([
-                "date_format(time, '%m-%e-%Y')",
+                "date_format(time, '%a. %b. %e, %Y')",
                 "year(time)",
                 "month(time)",
                 "day(time)"])
@@ -66,7 +66,7 @@ class DocumentStore {
             .bind({'year' : year})
             .bind({'month' : month})
             .bind({'day' : day})
-            .fields(["convert_tz(cast(time as datetime), '+00:00', '-05:00') as `time`", 'lat', 'lon', 'round(speed/1.609344, 2) as speed', 'round(alt*3.28084, 2) as alt'])
+            .fields([ 'lat', 'lon'])
             .sort(['time asc'])
             .execute()
         const data = result.fetchAll()
