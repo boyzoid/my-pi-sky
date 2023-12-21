@@ -28,41 +28,50 @@ class DocumentStore {
         await session.close()
     }
 
-    async getMonths(){
+    async getDates(){
         const session = await this.#pool.getSession()
         const schema = session.getSchema(this.#schemaName)
         const collection = schema.getCollection(this.#collectionName)
-        const result = await collection.find().
+        const result = await collection.find('time <= now()').
             fields([
-                "date_format(time, '%M %Y') as `full`",
+                "date_format(time, '%m-%e-%Y') as `full`",
                 "year(time) as `year`",
-                "month(time) as `month`"])
+                "month(time) as `month`",
+                "day(time) as `day`"])
             .groupBy([
-                "date_format(time, '%M %Y')",
+                "date_format(time, '%m-%e-%Y')",
                 "year(time)",
-                "month(time)"])
+                "month(time)",
+                "day(time)"])
             .sort([
                 "year(time) desc",
-                "month(time) desc"])
+                "month(time) desc",
+                "day(time) desc"])
             .execute()
         const data = result.fetchAll()
         await session.close()
         return data
     }
 
-    async getDates(year, month){
+    async getPoints(year, month, day){
         const session = await this.#pool.getSession()
-        const sql = `select json_object('days',json_arrayagg(date))
-                        from(select
-                            distinct day(doc->>'$.time') date
-                        from location
-                        where year(doc->>'$.time') = 2023
-                          and month(doc->>'$.time') = 10) as dates`
-        const query = session.sql(sql)
-        const results = await query.execute()
-        const data = results.fetchAll()
+        const schema = session.getSchema(this.#schemaName)
+        const collection = schema.getCollection(this.#collectionName)
+        const result = await collection.find(`
+            year(time) = :year 
+            and month(time) = :month 
+            and day(time) = :day
+            and speed/1.609344 > .75`
+            )
+            .bind({'year' : year})
+            .bind({'month' : month})
+            .bind({'day' : day})
+            .fields(["convert_tz(cast(time as datetime), '+00:00', '-05:00') as `time`", 'lat', 'lon', 'round(speed/1.609344, 2) as speed', 'round(alt*3.28084, 2) as alt'])
+            .sort(['time asc'])
+            .execute()
+        const data = result.fetchAll()
         await session.close()
-        return data[0][0].days
+        return data
     }
 }
 export default DocumentStore
