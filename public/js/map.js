@@ -38,8 +38,17 @@ const getData = async (e) => {
     for( let point of data.points){
         points.push([point.lat, point.lon])
     }
-    const polyLine = L.polyline(points, {color: '#00758F', weight: 5}).addTo(map)
+    const polyLine = L.motion.polyline(points,
+        {
+            color: '#00758F',
+            weight: 8
+        },
+        {
+            auto: true,
+            duration:3000
+        })
     map.fitBounds(polyLine.getBounds())
+    polyLine.addTo(map)
 }
 
 const clearMap = () => {
@@ -49,7 +58,7 @@ const clearMap = () => {
 }
 
 const locationSuccessCallback = (position) => {
-    map.setView([position.coords.latitude, position.coords.longitude], 15);
+    map.setView([position.coords.latitude, position.coords.longitude], 16);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
 };
 
