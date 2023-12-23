@@ -1,4 +1,5 @@
 let map = L.map('map')
+let dates = []
 const init = () => {
     navigator.geolocation.getCurrentPosition(locationSuccessCallback, locationErrorCallback, {enableHighAccuracy:true});
     getDates()
@@ -7,30 +8,35 @@ const init = () => {
 const getDates = async () => {
     const response = await fetch('/api/dates')
     const data = await response.json()
-    setDates(data.dates)
+    dates = data.dates
+    initCalendar()
 }
 
-const setDates = (dates) => {
-    const dateEl = document.querySelector('#dates')
-    let str = ''
-    for( let date of dates){
-        str += `<a href="#" class="list-group-item list-group-item-action gps-date" 
-                    data-year="${date.year}"
-                    data-month="${date.month}"
-                    data-day="${date.day}">
-                    ${date.full}
-                </a>`
-    }
-    dateEl.innerHTML = str
-    const btnEls = document.querySelectorAll('.gps-date')
-    for(let btn of btnEls) btn.addEventListener('click', getData)
+const initCalendar = () => {
+    const elem = document.querySelector('.date');
+    const firstDate = dates[dates.length-1]
+    const datepicker = new Datepicker(elem, {
+        type: "inline",
+        maxDate: new Date(),
+        minDate: new Date(firstDate.year, firstDate.month-1, firstDate.day),
+        datesDisabled: isDateDisabled,
+        buttonClass: 'btn'
+    });
+    datepicker.element.addEventListener('changeDate',getData)
+}
+
+const isDateDisabled = (date) => {
+    const disabled = !dates.find((element) =>{
+        return element.year === date.getFullYear() && element.month-1 === date.getMonth() && element.day === date.getDate()
+    })
+    return disabled
 }
 
 const getData = async (e) => {
     clearMap()
-    const year = e.target.dataset.year
-    const month = e.target.dataset.month
-    const day = e.target.dataset.day
+    const year = e.detail.date.getFullYear()
+    const month = e.detail.date.getMonth() + 1
+    const day = e.detail.date.getDate()
     const response = await fetch(`/api/points/${year}/${month}/${day}`)
     const data = await response.json()
     let points = []
