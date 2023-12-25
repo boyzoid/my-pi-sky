@@ -17,7 +17,7 @@ const docStore = new DocumentStore(
     process.env.DB_COLLECTION
 );
 
-const port = new SerialPort({path: '/dev/ttyS0', baudRate: 9600})
+const port = new SerialPort({path: '/dev/serial0', baudRate: 9600})
 const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 const gps = new GPS
 let startDate = new Date()
