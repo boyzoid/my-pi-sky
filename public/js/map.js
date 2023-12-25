@@ -1,8 +1,7 @@
 let map = L.map('map')
 let dates = []
 const init = () => {
-    map.setView([0,0], 3);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
+    navigator.geolocation.getCurrentPosition(locationSuccessCallback, locationErrorCallback, {enableHighAccuracy:true});
     getDates()
 }
 
@@ -62,5 +61,16 @@ const clearMap = () => {
        if(layer._path) layer.remove()
     })
 }
+
+const locationSuccessCallback = (position) => {
+    map.setView([position.coords.latitude, position.coords.longitude], 16);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
+};
+
+const locationErrorCallback = (error) => {
+    map.setView([0,0], 3);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map)
+    getDates()
+};
 
 window.onload = init
