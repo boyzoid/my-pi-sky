@@ -51,10 +51,10 @@ gps.on('data', async ()=>{
     }
 })
 
-/*parser.on('data', (data)=>{
+parser.on('data', (data)=>{
     try{
         gps.update(data)
     }
     catch(e){
     }
-})*/
+})
