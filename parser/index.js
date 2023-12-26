@@ -19,6 +19,9 @@ const docStore = new DocumentStore(
 
 const port = new SerialPort({path: '/dev/ttyS0', baudRate: 9600})
 const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
+port.on('open', (e)=>{
+    console.log(e)
+})
 const gps = new GPS
 let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
@@ -50,10 +53,10 @@ gps.on('data', async ()=>{
     }
 })
 
-parser.on('data', (data)=>{
+/*parser.on('data', (data)=>{
     try{
         gps.update(data)
     }
     catch(e){
     }
-})
+})*/
