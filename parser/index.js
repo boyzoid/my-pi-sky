@@ -18,6 +18,7 @@ const docStore = new DocumentStore(
 );
 
 const port = new SerialPort({path: '/dev/ttyS0', baudRate: 9600})
+port.close()
 //const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 port.on('open', (e)=>{
     console.log('Port open')
