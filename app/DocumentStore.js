@@ -60,13 +60,12 @@ class DocumentStore {
         const result = await collection.find(`
             year(time) = :year 
             and month(time) = :month 
-            and day(time) = :day
-            and speed/1.609344 > .75`
+            and day(time) = :day`
             )
             .bind({'year' : year})
             .bind({'month' : month})
             .bind({'day' : day})
-            .fields([ 'lat', 'lon'])
+            .fields([ 'lat', 'lon', 'speed', 'altitude'])
             .sort(['time asc'])
             .execute()
         const data = result.fetchAll()

@@ -39,7 +39,13 @@ app.get('/api/dates', async (req, res) => {
 })
 
 app.get('/api/points/:year/:month/:day', async (req, res) => {
-    const points = await docStore.getPoints(req.params.year, req.params.month, req.params.day)
-    let msg = {points: points}
-    res.send(msg)
+    const data = {}
+    data.points = await docStore.getPoints(req.params.year, req.params.month, req.params.day)
+    data.avgSpeedK = round( data.points.reduce((val, item)=>val + item.speed, 0)/data.points.length)
+    data.avgSpeedM = round( data.avgSpeedK * 0.6213711922)
+    res.send(data)
 })
+
+const round = (val)=>{
+    return Math.round(val * 10 ** 2)/10 ** 2
+}

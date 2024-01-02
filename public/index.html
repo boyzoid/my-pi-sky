@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ZoidMap</title>
+    <title>SPS</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/datepicker-bs5.css" />
     <link rel="stylesheet" href="/css/leaflet.css" />
@@ -12,12 +12,13 @@
 <div class="container-fluid min-vh-100 d-flex flex-column">
     <div class="row">
         <div class="col">
-            <h1>ZoidMap</h1>
+            <h1>SPS</h1>
         </div>
     </div>
     <div class="row flex-grow-1">
         <div class="col-md-2">
             <div class="date"></div>
+            <div id="details"></div>
         </div>
         <div class="col-md-10">
             <div class="h-100 w-100" id="map"></div>
@@ -30,5 +31,6 @@
 <script src="/js/leaflet.motion.min.js"></script>
 <script src="/js/datepicker.min.js"></script>
 <script src="/js/map.js"></script>
+<script src="/js/gps.js"></script>
 </body>
 </html>

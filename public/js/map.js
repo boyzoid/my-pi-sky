@@ -13,7 +13,7 @@ const getDates = async () => {
 }
 
 const initCalendar = () => {
-    const elem = document.querySelector('.date');
+    const elem = document.querySelector('.date')
     const firstDate = dates[dates.length-1]
     const datepicker = new Datepicker(elem, {
         type: "inline",
@@ -46,7 +46,7 @@ const getData = async (e) => {
     const polyLine = L.motion.polyline(points,
         {
             color: '#00758F',
-            weight: 8
+            weight: 6
         },
         {
             auto: true,
@@ -54,6 +54,23 @@ const getData = async (e) => {
         })
     map.fitBounds(polyLine.getBounds())
     polyLine.addTo(map)
+    data.distanceK = round(GPS.TotalDistance(data.points))
+    data.distanceM = round(data.distanceK * 0.6213711922)
+    showData(data)
+}
+
+const showData = (data) => {
+    const elem = document.querySelector('#details')
+    elem.innerHTML = ''
+    const str = `<div class="text-center">
+                    <h2 class="fw-bold">Avg. Speed</h2> 
+                    <h3>${data.avgSpeedK} kph<br/>${data.avgSpeedM} mph<h3>
+                 </div>
+                 <div class="text-center">
+                    <h2 class="fw-bold">Distance</h2> 
+                    <h3>${data.distanceK} km<br/>${data.distanceM} mi</h3>
+                </div>`
+    elem.innerHTML = str
 }
 
 const clearMap = () => {
@@ -72,5 +89,9 @@ const locationErrorCallback = (error) => {
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map)
     getDates()
 };
+
+const round = (val)=>{
+    return Math.round(val * 10 ** 2)/10 ** 2
+}
 
 window.onload = init
