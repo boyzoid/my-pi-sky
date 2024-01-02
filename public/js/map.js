@@ -13,10 +13,11 @@ const getDates = async () => {
 
 const initCalendar = () => {
     const elem = document.querySelector('#date')
-    const firstDate = dates[dates.length-1]
+    const lastDate = dates[dates.length-1]
+    const firstDate = dates[0]
     const datepicker = new Datepicker(elem, {
         type: "inline",
-        maxDate: new Date(),
+        maxDate: new Date(lastDate.year, lastDate.month-1, lastDate.day),
         minDate: new Date(firstDate.year, firstDate.month-1, firstDate.day),
         datesDisabled: isDateDisabled,
         buttonClass: 'btn'
