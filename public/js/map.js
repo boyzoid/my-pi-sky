@@ -2,7 +2,6 @@ let map = L.map('map')
 let dates = []
 const init = () => {
     navigator.geolocation.getCurrentPosition(locationSuccessCallback, locationErrorCallback, {enableHighAccuracy:true});
-    getDates()
 }
 
 const getDates = async () => {
@@ -13,7 +12,7 @@ const getDates = async () => {
 }
 
 const initCalendar = () => {
-    const elem = document.querySelector('.date')
+    const elem = document.querySelector('#date')
     const firstDate = dates[dates.length-1]
     const datepicker = new Datepicker(elem, {
         type: "inline",
@@ -82,6 +81,7 @@ const clearMap = () => {
 const locationSuccessCallback = (position) => {
     map.setView([position.coords.latitude, position.coords.longitude], 16);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
+    getDates()
 };
 
 const locationErrorCallback = (error) => {
