@@ -201,7 +201,7 @@
 }
 
 .datepicker-cell.focused:not(.selected) {
-  background-color: #e2e6ea;
+  //background-color: #e2e6ea;
 }
 
 .datepicker-cell.selected,

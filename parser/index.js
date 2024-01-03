@@ -4,8 +4,6 @@ import GPS from "gps"
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-
-
 import DocumentStore from "../app/DocumentStore.js";
 
 const docStore = new DocumentStore(
@@ -23,7 +21,6 @@ const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 const gps = new GPS
 let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
-let lastPoint = {lat: 0, lon: 0};
 
 console.log('App started')
 
@@ -33,7 +30,6 @@ gps.on('data', async ()=>{
     if((gps.state.lat && gps.state.lon) && sec > 5000 && gps.state.speed > 3){
         //Approx 1.8 MPH
         startDate = gps.state.time
-        lastPoint = {lat: gps.state.lat, lon: gps.state.lon}
         const loc = {
             lat: gps.state.lat,
             lon: gps.state.lon,
