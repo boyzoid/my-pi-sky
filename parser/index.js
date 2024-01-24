@@ -1,8 +1,9 @@
-import { SerialPort } from "serialport"
+import { SerialPort } from 'serialport'
 import { ReadlineParser } from '@serialport/parser-readline'
-import GPS from "gps"
+import GPS from 'gps'
 import * as dotenv from 'dotenv'
 dotenv.config()
+import nmea from 'nmea-simple'
 
 import DocumentStore from "../app/DocumentStore.js";
 
@@ -25,6 +26,7 @@ startDate.setMinutes(startDate.getMinutes() - 1)
 console.log('App started')
 
 gps.on('data', async ()=>{
+    console.log(gps.state)
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff))
     if((gps.state.lat && gps.state.lon) && sec > 5000 && gps.state.speed > 3){
@@ -49,7 +51,10 @@ gps.on('data', async ()=>{
 
 parser.on('data', (data)=>{
     try{
-        gps.updatePartial(data)
+        const packet = nmea.parseNmeaSentence(data)
+        if(packet.sentenceId == 'RMC'){
+            gps.update(data)
+        }
     }
     catch(e){
     }
