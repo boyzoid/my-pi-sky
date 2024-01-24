@@ -26,7 +26,6 @@ startDate.setMinutes(startDate.getMinutes() - 1)
 console.log('App started')
 
 gps.on('data', async ()=>{
-    console.log(gps.state)
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff))
     if((gps.state.lat && gps.state.lon) && sec > 5000 && gps.state.speed > 3.5){
