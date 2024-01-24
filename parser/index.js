@@ -49,7 +49,8 @@ gps.on('data', async ()=>{
 
 parser.on('data', (data)=>{
     try{
-        gps.update(data)
+        console.log(data)
+        gps.updatePartial(data)
     }
     catch(e){
     }
