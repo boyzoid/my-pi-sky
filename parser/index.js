@@ -29,13 +29,13 @@ gps.on('data', async ()=>{
     console.log(gps.state)
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff))
-    if((gps.state.lat && gps.state.lon) && sec > 5000 && gps.state.speed > 3){
-        //Approx 1.8 MPH
+    if((gps.state.lat && gps.state.lon) && sec > 5000 && gps.state.speed > 3.5){
+        //Approx 2.1 MPH
         startDate = gps.state.time
         const loc = {
             lat: gps.state.lat,
             lon: gps.state.lon,
-            speed: gps.state.speed || 0,
+            speed: gps.state.speed,
             altitude: gps.state.alt,
             time: gps.state.time
         }
