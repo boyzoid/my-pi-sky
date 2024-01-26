@@ -3,7 +3,6 @@ import { ReadlineParser } from '@serialport/parser-readline'
 import GPS from 'gps'
 import * as dotenv from 'dotenv'
 dotenv.config()
-import nmea from 'nmea-simple'
 
 import DocumentStore from "../app/DocumentStore.js";
 
@@ -50,10 +49,7 @@ gps.on('data', async ()=>{
 
 parser.on('data', (data)=>{
     try{
-        const packet = nmea.parseNmeaSentence(data)
-        if(packet.sentenceId == 'RMC'){
-            gps.update(data)
-        }
+        gps.update(data)
     }
     catch(e){
     }
