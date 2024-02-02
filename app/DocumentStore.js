@@ -34,19 +34,17 @@ class DocumentStore {
         const collection = schema.getCollection(this.#collectionName)
         const result = await collection.find('time <= now()').
             fields([
-                "date_format(time, '%a. %b. %e, %Y') as `full`",
-                "year(time) as `year`",
-                "month(time) as `month`",
-                "day(time) as `day`"])
+                "year(convert_tz(time, 'UTC', 'UTC')) as `year`",
+                "month(convert_tz(time, 'UTC', 'UTC')) as `month`",
+                "day(convert_tz(time, 'UTC', 'UTC')) as `day`"])
             .groupBy([
-                "date_format(time, '%a. %b. %e, %Y')",
-                "year(time)",
-                "month(time)",
-                "day(time)"])
+                "year(convert_tz(time, 'UTC', 'UTC'))",
+                "month(convert_tz(time, 'UTC', 'UTC'))",
+                "day(convert_tz(time, 'UTC', 'UTC'))"])
             .sort([
-                "year(time) desc",
-                "month(time) desc",
-                "day(time) desc"])
+                "year(convert_tz(time, 'UTC', 'UTC')) desc",
+                "month(convert_tz(time, 'UTC', 'UTC')) desc",
+                "day(convert_tz(time, 'UTC', 'UTC')) desc"])
             .execute()
         const data = result.fetchAll()
         await session.close()
@@ -58,9 +56,9 @@ class DocumentStore {
         const schema = session.getSchema(this.#schemaName)
         const collection = schema.getCollection(this.#collectionName)
         const result = await collection.find(`
-            year(time) = :year 
-            and month(time) = :month 
-            and day(time) = :day`
+            year(convert_tz(time, 'UTC', 'UTC')) = :year 
+            and month(convert_tz(time, 'UTC', 'UTC')) = :month 
+            and day(convert_tz(time, 'UTC', 'UTC')) = :day`
             )
             .bind({'year' : year})
             .bind({'month' : month})
