@@ -53,7 +53,7 @@ const getData = async (e) => {
         },
         {
             auto: true,
-            duration:3000
+            speed: (data.avgSpeedK * 200)
         })
     map.fitBounds(polyLine.getBounds())
     polyLine.addTo(map)
