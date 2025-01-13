@@ -57,6 +57,5 @@ parser.on('data', (data)=>{
         gps.update(data)
     }
     catch(e){
-        console.log(e)
     }
 })
