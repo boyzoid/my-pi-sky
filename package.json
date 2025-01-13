@@ -10,14 +10,14 @@
   "author": "Scott Stroz",
   "license": "MIT",
   "dependencies": {
-    "@mysql/xdevapi": "^8.0.33",
-    "body-parser": "^1.20.2",
+    "@mysql/xdevapi": "^8.0.35",
+    "body-parser": "^1.20.3",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "gps": "^0.6.1",
+    "express": "^4.21.2",
+    "gps": "^0.7.3",
     "nmea-simple": "^3.3.0",
-    "oci-sdk": "^2.77.0",
-    "serialport": "^12.0.0"
+    "oci-sdk": "^2.100.1",
+    "serialport": "^13.0.0"
   },
   "type": "module"
 }

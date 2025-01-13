@@ -35,7 +35,8 @@ gps.on('data', async ()=>{
             lon: gps.state.lon,
             speed: gps.state.speed,
             altitude: gps.state.alt,
-            time: gps.state.time
+            time: gps.state.time,
+            synced: false
         }
         try{
             await docStore.addLocation(loc)
@@ -49,7 +50,7 @@ gps.on('data', async ()=>{
 
 parser.on('data', (data)=>{
     try{
-        gps.update(data)
+        gps.updatePartial(data)
     }
     catch(e){
     }
