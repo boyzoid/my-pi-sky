@@ -1,6 +1,7 @@
 import { SerialPort } from 'serialport'
 import { ReadlineParser } from '@serialport/parser-readline'
 import GPS from 'gps'
+import * as crypto from 'node:crypto'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -21,6 +22,7 @@ const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 const gps = new GPS
 let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
+const uuid = crypto.randomUUID()
 
 console.log('App started')
 
@@ -36,7 +38,8 @@ gps.on('data', async ()=>{
             speed: gps.state.speed,
             altitude: gps.state.alt,
             time: gps.state.time,
-            synced: false
+            synced: false,
+            tripId: uuid
         }
         try{
             await docStore.addLocation(loc)
