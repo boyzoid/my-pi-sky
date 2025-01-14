@@ -3,8 +3,12 @@ let dates = []
 let replicaStatus = ''
 const init = () => {
     navigator.geolocation.getCurrentPosition(locationSuccessCallback, locationErrorCallback, {enableHighAccuracy:true});
-    getReplicaStatus()
-    setInterval(getReplicaStatus, 5000)
+    const container = document.querySelector('#trips');
+    container.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('trip_link')) {
+            await getTrip(e.target.getAttribute('data-id'))
+        }
+    });
 }
 
 const getDates = async () => {
@@ -16,31 +20,39 @@ const getDates = async () => {
 
 const initCalendar = () => {
     const elem = document.querySelector('#date')
-    const lastDate = dates[dates.length-1]
-    const firstDate = dates[0]
+    const lastDate = new Date (dates[dates.length-1])
+    const firstDate = new Date(dates[0])
     const datepicker = new Datepicker(elem, {
         type: "inline",
-        maxDate: new Date(lastDate.year, lastDate.month-1, lastDate.day),
-        minDate: new Date(firstDate.year, firstDate.month-1, firstDate.day),
+        maxDate: lastDate,
+        minDate: firstDate,
         datesDisabled: isDateDisabled,
         buttonClass: 'btn'
     });
-    datepicker.element.addEventListener('changeDate',getData)
+    datepicker.element.addEventListener('changeDate',getTrips)
 }
 
 const isDateDisabled = (date) => {
     const disabled = !dates.find((element) =>{
-        return element.year === date.getFullYear() && element.month-1 === date.getMonth() && element.day === date.getDate()
+        const el = new Date(element)
+        return el.getFullYear() === date.getFullYear() && el.getMonth() === date.getMonth() && el.getDate() === date.getDate()
     })
     return disabled
 }
 
-const getData = async (e) => {
-    clearMap()
+const getTrips = async (e) =>{
+    document.querySelector('#details').innerHTML = ''
     const year = e.detail.date.getFullYear()
     const month = e.detail.date.getMonth() + 1
     const day = e.detail.date.getDate()
-    const response = await fetch(`/api/points/${year}/${month}/${day}`)
+    const response = await fetch(`/api/trips/${year}/${month}/${day}`)
+    const data = await response.json()
+    showTrips(data.trips)
+}
+
+const getTrip = async (id) => {
+    clearMap()
+    const response = await fetch(`/api/trip/${id}`)
     const data = await response.json()
     let points = []
     for( let point of data.points){
@@ -59,10 +71,21 @@ const getData = async (e) => {
     polyLine.addTo(map)
     data.distanceK = round(GPS.TotalDistance(data.points))
     data.distanceM = round(data.distanceK * 0.6213711922)
-    showData(data)
+    showTrip(data)
 }
 
-const showData = (data) => {
+const showTrips = (trips) =>{
+    const elem = document.querySelector('#trips')
+    let tripsStr = ''
+
+    for (const trip of trips){
+        const newTrip = `<div class="fw-bold"><a href="#" data-id="${trip.id}" class="trip_link">${trip.name}</a></div><div><span class="fw-bold">Start:</span> ${trip.tripStart}</div><div><span class="fw-bold">End:</span> ${trip.tripEnd}</div>`
+        tripsStr += newTrip
+    }
+    elem.innerHTML = `<div class="text-center card p-2 m-2"><h4>Trips</h4>${tripsStr}</div>`
+}
+
+const showTrip = (data) => {
     const elem = document.querySelector('#details')
     elem.innerHTML = ''
     const str = `<div class="text-center card p-2 m-2">
@@ -94,37 +117,6 @@ const locationErrorCallback = (error) => {
 
 const round = (val)=>{
     return Math.round(val * 10 ** 2)/10 ** 2
-}
-
-const getReplicaStatus = async () =>{
-    const response = await fetch('/api/replica-status')
-    const channel = await response.json()
-    const elem = document.querySelector('#replica')
-    let state = 'alert-primary'
-    const replicaState = {
-        UPDATING:{
-            string: "Updating",
-            class: "alert-warning"
-        },
-        INACTIVE:{
-            string: "Disabled",
-            class: "alert-light"
-        },
-        ACTIVE:{
-            string: "Active",
-            class: "alert-success"
-        },
-        NEEDS_ATTENTION:{
-            string: "Needs Attention",
-            class: "alert-danger"
-        }
-    }
-    elem.innerHTML = ''
-    const str = `<div class="text-center card p-2 m-2">
-                    <h4>Replication State</h4> 
-                    <div class="alert ${replicaState[channel.state] ? replicaState[channel.state].class : 'alert-primary'}">${replicaState[channel.state] ? replicaState[channel.state].string : 'Unknown'}</div>
-                </div>`
-    elem.innerHTML = str
 }
 
 window.onload = init

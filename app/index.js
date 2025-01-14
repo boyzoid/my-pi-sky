@@ -41,19 +41,20 @@ app.get('/api/dates', async (req, res) => {
     res.send(msg)
 })
 
-app.get('/api/points/:year/:month/:day', async (req, res) => {
+app.get('/api/trips/:year/:month/:day', async (req, res) => {
     const data = {}
-    data.points = await docStore.getPoints(req.params.year, req.params.month, req.params.day)
+    data.trips = await docStore.getTrips(req.params.year, req.params.month, req.params.day)
+    res.send(data)
+})
+
+app.get('/api/trip/:id', async (req, res) => {
+    const data = {}
+    data.points = await docStore.getTrip(req.params.id)
     data.avgSpeedK = round( data.points.reduce((val, item)=>val + item.speed, 0)/data.points.length)
     data.avgSpeedM = round( data.avgSpeedK * 0.6213711922)
     res.send(data)
 })
 
-app.get('/api/replica-status', async (req, res) => {
-    const result = await mySqlChannelClient.getChannel(process.env.MYSQL_REPLICATION_CHANNEL_ID)
-    const data = {channelName: result.channel.displayName, state: result.channel.lifecycleState}
-    res.send(data)
-})
 
 const round = (val)=>{
     return Math.round(val * 10 ** 2)/10 ** 2
