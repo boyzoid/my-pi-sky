@@ -6,7 +6,6 @@ dotenv.config()
 // Document Store Service
 import DocumentStore from "./DocumentStore.js"
 import path from "path"
-import MySQLChannelClient from "./MySQLChannelClient.js"
 const docStore = new DocumentStore(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
@@ -15,9 +14,6 @@ const docStore = new DocumentStore(
     process.env.DB_SCHEMA,
     process.env.DB_COLLECTION
 )
-
-const mySqlChannelClient = new MySQLChannelClient()
-
 
 // defining the Express app
 const app = express()

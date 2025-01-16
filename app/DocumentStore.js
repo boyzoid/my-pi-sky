@@ -34,7 +34,7 @@ class DocumentStore {
     async getDates(){
         const session = await this.#pool.getSession()
         const sql = `select distinct 
-                            date_format(min(convert_tz(doc->>'$.time', 'UTC','UTC')), '%Y-%m-%dT00:00:00') as date
+                            date_format(min(convert_tz(doc->>'$.time', 'UTC','America/New_York')), '%Y-%m-%dT00:00:00') as date
                             from location
                             group by doc->>'$.tripId'
                             order by date`
@@ -58,8 +58,8 @@ class DocumentStore {
         const session = await this.#pool.getSession()
         const sql = `with trips as (
                 select doc->>'$.tripId' tripId,
-                       min(convert_tz(doc->>'$.time', 'UTC', 'UTC')) tripStart,
-                       max(convert_tz(doc->>'$.time', 'UTC', 'UTC')) tripEnd
+                       min(convert_tz(doc->>'$.time', 'UTC', 'America/New_York')) tripStart,
+                       max(convert_tz(doc->>'$.time', 'UTC', 'America/New_York')) tripEnd
                 from location
                 group by tripId
                 )
