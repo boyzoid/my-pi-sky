@@ -137,6 +137,7 @@ class DocumentStore {
     }
 
     async syncData(){
+        console.log("Starting sync")
         try{
             const locs = await this.getUnsyncedLocations()
             const result = await this.#functionsClient.invoke(locs)
@@ -153,6 +154,7 @@ class DocumentStore {
             const sql = `update location set doc = json_set(doc, "$.synced", true) where doc->>'$._id' in (${idStr})`
             await session.sql(sql).execute()
             session.close()
+            console.log("sync complete")
         }
         catch (e){
             console.log('Server seems to be off line.')

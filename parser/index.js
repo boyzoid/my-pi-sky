@@ -60,3 +60,6 @@ parser.on('data', (data)=>{
         console.log(e)
     }
 })
+
+//Start syncing data.
+setInterval(docStore.syncData, 30000)

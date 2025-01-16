@@ -60,8 +60,6 @@ app.get('/api/delete/:id', async (req, res) => {
     res.send(ret)
 })
 
-//Start syncing data.
-setInterval(docStore.syncData, 30000)
 
 const round = (val)=>{
     return Math.round(val * 10 ** 2)/10 ** 2
