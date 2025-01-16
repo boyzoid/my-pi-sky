@@ -158,6 +158,7 @@ class DocumentStore {
         }
         catch (e){
             console.log('Server seems to be off line.')
+            console.log(e)
         }
 
     }
