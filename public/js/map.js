@@ -5,8 +5,12 @@ const init = () => {
     navigator.geolocation.getCurrentPosition(locationSuccessCallback, locationErrorCallback, {enableHighAccuracy:true});
     const container = document.querySelector('#trips');
     container.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('trip_link')) {
+
+        if (e.target.classList.contains('trip-link')) {
             await getTrip(e.target.getAttribute('data-id'))
+        }
+        else if (e.target.classList.contains('fa-trash')){
+            await deleteTrip(e.target.parentElement)
         }
     });
 }
@@ -74,25 +78,35 @@ const getTrip = async (id) => {
     showTrip(data)
 }
 
+const deleteTrip = async (el) => {
+    const id = el.getAttribute('data-id')
+    const response = await fetch(`/api/delete/${id}`)
+    const data = await response.json()
+    if(data.success){
+        el.parentElement.remove()
+    }
+
+}
+
 const showTrips = (trips) =>{
     const elem = document.querySelector('#trips')
     let tripsStr = ''
 
     for (const trip of trips){
-        const newTrip = `<div class="fw-bold"><a href="#" data-id="${trip.id}" class="trip_link">${trip.name}</a></div><div><span class="fw-bold">Start:</span> ${trip.tripStart}</div><div><span class="fw-bold">End:</span> ${trip.tripEnd}</div>`
+        const newTrip = `<li><a href="#" class="trip-del link-danger" data-id="${trip.id}"><i class="fas fa-trash"></i></a> <a href="#" data-id="${trip.id}" class="trip-link">${trip.tripStart}</a></li>`
         tripsStr += newTrip
     }
-    elem.innerHTML = `<div class="text-center card p-2 m-2"><h4>Trips</h4>${tripsStr}</div>`
+    elem.innerHTML = `<div class="card p-2 m-2"><div class="text-center"><h5>Trips</h5></div><div class="text-left"><ol>${tripsStr}</ol></div> </div>`
 }
 
 const showTrip = (data) => {
     const elem = document.querySelector('#details')
     elem.innerHTML = ''
     const str = `<div class="text-center card p-2 m-2">
-                    <h3 class="fw-bold">Avg. Speed</h3> 
-                    <h4>${data.avgSpeedK} kph<br/>${data.avgSpeedM} mph<h3>
-                    <h3 class="fw-bold">Distance</h3> 
-                    <h4>${data.distanceK} km<br/>${data.distanceM} mi</h4>
+                    <h4 class="fw-bold">Avg. Speed</h4> 
+                    <h5>${data.avgSpeedK} kph</h5>
+                    <h4 class="fw-bold">Distance</h4> 
+                    <h5>${data.distanceK} km</h5>
                 </div>`
     elem.innerHTML = str
 }

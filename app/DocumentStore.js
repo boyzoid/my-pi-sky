@@ -1,10 +1,12 @@
 import * as mysqlx from '@mysql/xdevapi'
+import FunctionsClient from "../app/FunctionsClient.js"
 
 class DocumentStore {
     #schemaName
     #collectionName
     #connectionUrl
     #pool
+    #functionsClient
     constructor(dbUser, dbPassword, dbHost, dbPort, schemaName, collectionName) {
         this.#schemaName = schemaName
         this.#collectionName = collectionName
@@ -18,6 +20,7 @@ class DocumentStore {
                 queueTimeout: 5000
             }
         })
+        this.#functionsClient =new FunctionsClient()
     }
 
     async addLocation(location){
@@ -68,7 +71,7 @@ class DocumentStore {
                 year(tripStart) = ?
                 and month(tripStart) = ?
                 and day(tripStart) = ?
-                order by tripStart desc`
+                order by tripStart`
         try{
             const results = await session.sql(sql).bind(year).bind(month).bind(day).execute()
             const trips = results.fetchAll()
@@ -104,6 +107,57 @@ class DocumentStore {
         const data = result.fetchAll()
         await session.close()
         return data
+    }
+
+    async deleteTrip(tripId){
+        const ret = {success: true}
+        const session = await this.#pool.getSession()
+        const schema = session.getSchema(this.#schemaName)
+        const collection = schema.getCollection(this.#collectionName)
+        try{
+            await collection.remove("tripId = :tripIdParam").bind('tripIdParam', tripId).execute()
+        }
+        catch (err){
+            ret.success = false
+        }
+        return ret
+    }
+
+    async getUnsyncedLocations(){
+        const session = await this.#pool.getSession()
+        const schema = session.getSchema(this.#schemaName)
+        const collection = schema.getCollection(this.#collectionName)
+        const result = await collection.find('synced = :syncedParam')
+            .bind('syncedParam', false)
+            .limit(100)
+            .execute()
+        const data = result.fetchAll()
+        await session.close()
+        return data
+    }
+
+    async syncData(){
+        try{
+            const locs = await this.getUnsyncedLocations()
+            const result = await this.#functionsClient.invoke(locs)
+            const data = await new Response(result.value).text()
+            const newLocs = JSON.parse(data).results
+            const ids = newLocs.map(trip =>{
+                if (trip.synced){
+                    return trip._id
+                }
+                else return null
+            })
+            const idStr = ids.map(item => `'${item}'`).join(",")
+            const session = await this.#pool.getSession()
+            const sql = `update location set doc = json_set(doc, "$.synced", true) where doc->>'$._id' in (${idStr})`
+            await session.sql(sql).execute()
+            session.close()
+        }
+        catch (e){
+            console.log('Server seems to be off line.')
+        }
+
     }
 }
 export default DocumentStore
