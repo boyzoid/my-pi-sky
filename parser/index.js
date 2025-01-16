@@ -62,5 +62,4 @@ parser.on('data', (data)=>{
 })
 
 //Start syncing data.
-//setInterval(docStore.syncData, 30000)
-docStore.syncData()
+setInterval(docStore.syncData, 30000)
