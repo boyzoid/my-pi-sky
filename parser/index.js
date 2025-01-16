@@ -61,5 +61,10 @@ parser.on('data', (data)=>{
     }
 })
 
+const syncdata = () =>{
+    docStore.syncData()
+}
 //Start syncing data.
-setInterval(docStore.syncData, 30000)
+setInterval(syncdata, 30000)
+
+syncdata()
