@@ -129,7 +129,7 @@ class DocumentStore {
         const collection = schema.getCollection(this.#collectionName)
         const result = await collection.find('synced = :syncedParam')
             .bind('syncedParam', false)
-            .limit(100)
+            .limit(200)
             .execute()
         const data = result.fetchAll()
         await session.close()
