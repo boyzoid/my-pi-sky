@@ -23,7 +23,7 @@ const gps = new GPS
 let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
 const uuid = crypto.randomUUID()
-const startPoint = {}
+let startPoint = {}
 
 console.log('App started')
 
@@ -42,7 +42,10 @@ gps.on('data', async ()=>{
             synced: false,
             tripId: uuid
         }
-        console.log(loc)
+        if(startPoint.lat){
+            console.log(GPS.Distance(startPoint.lat, startPoint.lon, loc.lat, loc.lon))
+        }
+        startPoint = loc
         try{
             await docStore.addLocation(loc)
         }
