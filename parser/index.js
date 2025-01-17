@@ -29,6 +29,7 @@ console.log('App started')
 
 gps.on('data', async ()=>{
     const distance = lastPoint.lat && (gps.state.lat && gps.state.lon)  ? GPS.Distance(lastPoint.lat, lastPoint.lon, gps.state.lat, gps.state.lon) : 0
+    lastPoint = {lat: gps.state.lat, lon: gps.state.lon}
     if(distance > 0.001){
         //Approx 5.25 feet
         const loc = {
@@ -41,7 +42,6 @@ gps.on('data', async ()=>{
             tripId: uuid
         }
         console.log(distance)
-        lastPoint = {lat: loc.lat, lon: loc.lon}
         try{
             await docStore.addLocation(loc)
         }
