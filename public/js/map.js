@@ -15,8 +15,12 @@ const init = () => {
     });
 }
 
+const getTzOffset = () =>{
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
 const getDates = async () => {
-    const response = await fetch('/api/dates')
+    const response = await fetch('/api/dates', {headers: new Headers({'tz': getTzOffset()})})
     const data = await response.json()
     dates = data.dates
     initCalendar()
@@ -49,7 +53,7 @@ const getTrips = async (e) =>{
     const year = e.detail.date.getFullYear()
     const month = e.detail.date.getMonth() + 1
     const day = e.detail.date.getDate()
-    const response = await fetch(`/api/trips/${year}/${month}/${day}`)
+    const response = await fetch(`/api/trips/${year}/${month}/${day}`, {headers: new Headers({'tz': getTzOffset()})})
     const data = await response.json()
     showTrips(data.trips)
 }

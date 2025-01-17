@@ -32,14 +32,18 @@ app.get('/', function(req, res, next) {
 });
 
 app.get('/api/dates', async (req, res) => {
-    const dates = await docStore.getDates()
+    const headers = req.headers
+    const offset = headers['tz'] ? headers['tz'] : 'UTC';
+    const dates = await docStore.getDates(offset)
     let msg = {dates: dates}
     res.send(msg)
 })
 
 app.get('/api/trips/:year/:month/:day', async (req, res) => {
+    const headers = req.headers
+    const offset = headers['tz'] ? headers['tz'] : 'UTC';
     const data = {}
-    data.trips = await docStore.getTrips(req.params.year, req.params.month, req.params.day)
+    data.trips = await docStore.getTrips(req.params.year, req.params.month, req.params.day, offset)
     res.send(data)
 })
 
