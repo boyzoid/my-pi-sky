@@ -23,14 +23,14 @@ const gps = new GPS
 let startDate = new Date()
 startDate.setMinutes(startDate.getMinutes() - 1)
 const uuid = crypto.randomUUID()
+const startPoint = {}
 
 console.log('App started')
 
 gps.on('data', async ()=>{
     const diff = Math.abs(startDate - gps.state.time)
     const sec = Math.floor((diff))
-    if((gps.state.lat && gps.state.lon) && sec > 1000 && gps.state.speed > 5){
-        console.log(gps.state)
+    if((gps.state.lat && gps.state.lon)){
         //Approx 3.1 MPH
         startDate = gps.state.time
         const loc = {
@@ -42,6 +42,7 @@ gps.on('data', async ()=>{
             synced: false,
             tripId: uuid
         }
+        console.log(loc)
         try{
             await docStore.addLocation(loc)
         }
