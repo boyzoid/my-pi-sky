@@ -41,7 +41,6 @@ gps.on('data', async ()=>{
             synced: false,
             tripId: uuid
         }
-        console.log(distance)
         try{
             await docStore.addLocation(loc)
         }
