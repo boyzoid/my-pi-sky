@@ -140,6 +140,7 @@ class DocumentStore {
         console.log("Starting sync")
         try{
             const locs = await this.getUnsyncedLocations()
+            console.log(`Syncing ${locs.length} points`)
             const result = await this.#functionsClient.invoke(locs)
             const data = await new Response(result.value).text()
             const newLocs = JSON.parse(data).results
@@ -149,11 +150,13 @@ class DocumentStore {
                 }
                 else return null
             })
-            const idStr = ids.map(item => `'${item}'`).join(",")
-            const session = await this.#pool.getSession()
-            const sql = `update location set doc = json_set(doc, "$.synced", true) where doc->>'$._id' in (${idStr})`
-            await session.sql(sql).execute()
-            session.close()
+            if(ids.length > 0){
+                const idStr = ids.map(item => `'${item}'`).join(",")
+                const session = await this.#pool.getSession()
+                const sql = `update location set doc = json_set(doc, "$.synced", true) where doc->>'$._id' in (${idStr})`
+                await session.sql(sql).execute()
+                session.close()
+            }
             console.log("sync complete")
         }
         catch (e){
