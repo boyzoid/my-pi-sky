@@ -28,48 +28,39 @@ let lastPoint = null
 console.log('App started')
 
 const validData = (data, lastPoint) => {
-    const distance = GPS.Distance(lastPoint.lat, lastPoint.lon, data.lat, data.lon) * 3280.84
-    let timeDiff = 0
-    try{
-        timeDiff = data.time.getTime() - lastPoint.time.getTime()
-    }
-    catch(e){
+    if(data.type === 'GGA'){
+        const distance = GPS.Distance(lastPoint.lat, lastPoint.lon, data.lat, data.lon) * 3280.84
+        const timeDiff = (data.time && lastPoint.time) ? data.time.getTime() - lastPoint.time.getTime() : 0
+        return data.valid
+            && data.satellites > 3
+            && data.hdop <= 1.5
+            && timeDiff > 500
+            && (distance) >= 2 //2 feet
+        }
+    else{
         return false
     }
-    //console.log({errors: data.errors, timeDiff: timeDiff, distance: distance, hdop: data.hdop, sats: Array.isArray(data.satsActive) ? data.satsActive.length : null})
-    return data.errors === 0 
-        && (Array.isArray(data.satsActive) && data.satsActive.length > 3)
-        && data.hdop <= 1.5
-        && timeDiff > 1000
-        && (distance) >= 2 //2 feet
-    }
+}  
 
 gps.on('data', async (data)=>{
-    if(data.type == 'GGA'){
-console.log(data)
-    }
-    
+    let valid = false
     if(!lastPoint){
-        lastPoint = {lat: gps.state.lat, lon: gps.state.lon, time: gps.state.time}
+        lastPoint = {lat: data.lat, lon: data.lon, time: data.time}
     }
-    const valid = validData(gps.state, lastPoint)
+    valid = validData(data, lastPoint)
+    
     if(valid){
-        //Approx 3 feet
         const loc = {
-            lat: gps.state.lat,
-            lon: gps.state.lon,
-            speed: gps.state.speed,
-            altitude: gps.state.alt,
-            time: gps.state.time,
+            lat: data.lat,
+            lon: data.lon,
+            speed: data.speed,
+            time: data.time,
             synced: false,
-            tripId: uuid,
-            satsActive: gps.state.satsActive.length,
-            hdop: gps.state.hdop
+            tripId: uuid
         }
         try{
             await docStore.addLocation(loc)
             lastPoint = {lat: loc.lat, lon: loc.lon, time:loc.time}
-            console.log(lastPoint)
         }
         catch(e){
             console.log('DB Error')
