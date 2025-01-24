@@ -101,7 +101,7 @@ class DocumentStore {
         const collection = schema.getCollection(this.#collectionName)
         const result = await collection.find('tripId = :tripIdParam')
             .bind('tripIdParam', tripId)
-            .fields([ 'lat', 'lon', 'speed'])
+            .fields([ 'lat', 'lon'])
             .sort(['time asc'])
             .execute()
         const data = result.fetchAll()

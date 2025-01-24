@@ -107,8 +107,6 @@ const showTrip = (data) => {
     const elem = document.querySelector('#details')
     elem.innerHTML = ''
     const str = `<div class="text-center card p-2 m-2">
-                    <h4 class="fw-bold">Avg. Speed</h4> 
-                    <h5>${data.avgSpeedK} kph</h5>
                     <h4 class="fw-bold">Distance</h4> 
                     <h5>${data.distanceK} km</h5>
                 </div>`

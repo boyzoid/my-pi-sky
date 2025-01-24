@@ -50,8 +50,6 @@ app.get('/api/trips/:year/:month/:day', async (req, res) => {
 app.get('/api/trip/:id', async (req, res) => {
     const data = {}
     data.points = await docStore.getTrip(req.params.id)
-    data.avgSpeedK = round( data.points.reduce((val, item)=>val + item.speed, 0)/data.points.length)
-    data.avgSpeedM = round( data.avgSpeedK * 0.6213711922)
     res.send(data)
 })
 
