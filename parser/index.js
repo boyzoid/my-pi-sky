@@ -30,7 +30,10 @@ console.log('App started')
 gps.on('data', async ()=>{
     const distance = lastPoint.lat && (gps.state.lat && gps.state.lon)  ? GPS.Distance(lastPoint.lat, lastPoint.lon, gps.state.lat, gps.state.lon) : 0
     lastPoint = {lat: gps.state.lat, lon: gps.state.lon}
-    if(distance > 0.001){
+    if(gps.state.errors === 0
+        && (Array.isArray(gps.state.satsActive) && gps.state.satsActive.length > 3)
+        && gps.state.hdop <= 1.5
+        && distance > 0.001){
         //Approx 5.25 feet
         const loc = {
             lat: gps.state.lat,
