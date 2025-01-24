@@ -29,13 +29,13 @@ console.log('App started')
 
 const validData = (data, lastPoint) => {
     if(data.type === 'GGA'){
-        const distance = GPS.Distance(lastPoint.lat, lastPoint.lon, data.lat, data.lon) * 3280.84
+        const distance = GPS.Distance(lastPoint.lat, lastPoint.lon, data.lat, data.lon) * 3280.84 //distance in feet
         const timeDiff = (data.time && lastPoint.time) ? data.time.getTime() - lastPoint.time.getTime() : 0
         return data.valid
             && data.satellites > 3
             && data.hdop <= 1.5
             && timeDiff > 500
-            && (distance) >= 2 //2 feet
+            && (distance) >= 2 
         }
     else{
         return false
