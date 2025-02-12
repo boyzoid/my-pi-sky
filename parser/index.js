@@ -20,8 +20,6 @@ const port = new SerialPort({path: '/dev/ttyS0', baudRate: 9600})
 const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }))
 
 const gps = new GPS
-let startDate = new Date()
-startDate.setMinutes(startDate.getMinutes() - 1)
 const uuid = crypto.randomUUID()
 let lastPoint = null
 
@@ -29,8 +27,13 @@ console.log('App started')
 
 const validData = (data, lastPoint) => {
     if(data.type === 'GGA'){
-        const distance = GPS.Distance(lastPoint.lat, lastPoint.lon, data.lat, data.lon) * 3280.84 //distance in feet
-        const timeDiff = (data.time && lastPoint.time) ? data.time.getTime() - lastPoint.time.getTime() : 0
+        const distance = GPS.Distance(
+            lastPoint.lat, 
+            lastPoint.lon, 
+            data.lat, 
+            data.lon) * 3280.84 //distance in feet
+        const timeDiff = (data.time && lastPoint.time) 
+            ? data.time.getTime() - lastPoint.time.getTime() : 0
         return data.valid
             && data.satellites > 3
             && data.hdop <= 1.5
