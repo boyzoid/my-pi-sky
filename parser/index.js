@@ -11,7 +11,7 @@ const docStore = new DocumentStore(
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     process.env.DB_HOST,
-    33060,
+    proess.env.DB_PORT,
     process.env.DB_SCHEMA,
     process.env.DB_COLLECTION
 );
