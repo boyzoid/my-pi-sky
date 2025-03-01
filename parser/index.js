@@ -87,5 +87,3 @@ const syncdata = () =>{
 }
 //Start syncing data.
 setInterval(syncdata, 30000)
-
-syncdata()
