@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-import DocumentStore from "DocumentStore.js";
+import DocumentStore from "./DocumentStore.js";
 
 const docStore = new DocumentStore(
     process.env.DB_USER,
