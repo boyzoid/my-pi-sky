@@ -52,6 +52,7 @@ class DocumentStore {
                 }
                 else return null
             })
+
             if(ids.length > 0){
                 const idStr = ids.map(item => `'${item}'`).join(",")
                 const session = await this.#pool.getSession()

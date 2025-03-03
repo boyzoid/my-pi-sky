@@ -17,5 +17,4 @@ const syncData = () =>{
     docStore.syncData()
 }
 //Start syncing data.
-//setInterval(syncdata, 30000)
-await docStore.syncData()
+setInterval(syncData, 30000)
