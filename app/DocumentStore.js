@@ -138,7 +138,9 @@ class DocumentStore {
 
     async syncData(){
         console.log("Starting sync")
-        try{
+        const session = await this.#pool.getSession()
+        await session.close()
+        /*try{
             const locs = await this.getUnsyncedLocations()
             console.log(`Syncing ${locs.length} points`)
             const result = await this.#functionsClient.invoke(locs)
@@ -162,7 +164,7 @@ class DocumentStore {
         catch (e){
             console.log('Server seems to be off line.')
             console.log(e)
-        }
+        }*/
 
     }
 }
