@@ -7,12 +7,12 @@ dotenv.config()
 import DocumentStore from "./DocumentStore.js"
 import path from "path"
 const docStore = new DocumentStore(
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    process.env.DB_HOST,
-    process.env.DB_PORT,
-    process.env.DB_SCHEMA,
-    process.env.DB_COLLECTION
+    process.env.SPS_DB_USER,
+    process.env.SPS_DB_PASSWORD,
+    process.env.SPS_DB_HOST,
+    process.env.SPS_DB_PORT,
+    process.env.SPS_DB_SCHEMA,
+    process.env.SPS_DB_COLLECTION
 )
 
 // defining the Express app
