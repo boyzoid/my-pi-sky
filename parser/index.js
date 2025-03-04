@@ -36,6 +36,7 @@ const validData = (data, lastPoint) => {
         const timeDiff = (data.time && lastPoint.time) 
             ? data.time.getTime() - lastPoint.time.getTime() : 0
         return data.valid
+            && data.quality === 'fix'
             && data.satellites > 3
             && data.hdop <= 1.5
             && timeDiff > 500
