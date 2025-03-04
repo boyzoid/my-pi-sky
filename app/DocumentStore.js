@@ -1,5 +1,5 @@
 import * as mysqlx from '@mysql/xdevapi'
-import FunctionsClient from "./FunctionsClient.jsFunctionsClient.js"
+import FunctionsClient from "./FunctionsClient.js"
 
 class DocumentStore {
     #schemaName
