@@ -15,6 +15,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.21.2",
     "gps": "^0.7.3",
+    "is-online": "^11.0.0",
     "nmea-simple": "^3.3.0",
     "oci-sdk": "^2.100.1",
     "serialport": "^13.0.0"

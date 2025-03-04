@@ -2,6 +2,7 @@ import { SerialPort } from 'serialport'
 import { ReadlineParser } from '@serialport/parser-readline'
 import GPS from 'gps'
 import * as crypto from 'node:crypto'
+import isOnline from 'is-online'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -82,8 +83,14 @@ parser.on('data', (data)=>{
     }
 })
 
-const syncData = () =>{
-    docStore.syncData()
+const syncData = async () => {
+    let online = await isOnline()
+    if(online){
+        try{
+            await docStore.syncData()
+        }
+        catch (e) {}
+    }
 }
 //Start syncing data.
 setInterval(syncData, 30000)
